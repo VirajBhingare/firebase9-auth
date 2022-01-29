@@ -14,7 +14,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Alert } from "@mui/material";
+import { Alert, LinearProgress } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
 const Copyright = (props) => {
@@ -107,6 +107,11 @@ const SignUp = () => {
           <Typography component="h1" variant="h5">
             Sign Up
           </Typography>
+          {loading && (
+            <Box sx={{ width: "75%", mt: 2 }}>
+              <LinearProgress />
+            </Box>
+          )}
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {error}
