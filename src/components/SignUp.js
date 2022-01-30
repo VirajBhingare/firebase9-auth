@@ -11,7 +11,6 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import GoogleIcon from "@mui/icons-material/Google";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -41,19 +40,17 @@ const theme = createTheme({
 
 const SignUp = () => {
   const [user, setUser] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
   const usersCollectionRef = collection(db, "users");
-  const addUser = async (email, firstName, lastName) => {
+  const addUser = async (email, name) => {
     await addDoc(usersCollectionRef, {
       email: email,
-      firstName: firstName,
-      lastName: lastName,
+      name: name,
     });
   };
 
@@ -69,7 +66,7 @@ const SignUp = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp } = useAuth();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -82,31 +79,12 @@ const SignUp = () => {
       setError("");
       setLoading(true);
       await signUp(user.email, user.password);
-      addUser(user.email, user.firstName, user.lastName);
+      addUser(user.email, user.name);
       setLoading(false);
       history.push("/");
     } catch {
       setError("Failed to create your account");
     }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setError("");
-    setLoading(true);
-    await signInWithGoogle()
-      .then((result) => {
-        addUser(
-          result.user.email,
-          result.user.displayName,
-          result.user.displayName
-        );
-        setLoading(false);
-        history.push("/");
-      })
-      .catch((error) => {
-        setError("Failed to Sign In with Google");
-        console.log(error);
-      });
   };
 
   return (
@@ -144,28 +122,16 @@ const SignUp = () => {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="name"
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
+                  id="name"
+                  label="Your Name"
                   autoFocus
-                  value={user.firstName}
-                  onChange={getUserData}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  value={user.lastName}
+                  value={user.name}
                   onChange={getUserData}
                 />
               </Grid>
@@ -216,16 +182,6 @@ const SignUp = () => {
               disabled={loading}
             >
               Sign Up
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              sx={{ mb: 2 }}
-              disabled={loading}
-              onClick={handleGoogleSignIn}
-              startIcon={<GoogleIcon />}
-            >
-              Sign In With Google
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>

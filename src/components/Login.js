@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
+import { db } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -9,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import GoogleIcon from "@mui/icons-material/Google";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -42,6 +45,14 @@ const Login = () => {
     password: "",
   });
 
+  const usersCollectionRef = collection(db, "users");
+  const addUser = async (email, name) => {
+    await addDoc(usersCollectionRef, {
+      email: email,
+      name: name,
+    });
+  };
+
   const history = useHistory();
 
   let name, value;
@@ -54,7 +65,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { login, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -68,6 +79,21 @@ const Login = () => {
     } catch {
       setError("Failed to Log in");
     }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setLoading(true);
+    await signInWithGoogle()
+      .then((result) => {
+        addUser(result.user.email, result.user.displayName);
+        setLoading(false);
+        history.push("/");
+      })
+      .catch((error) => {
+        setError("Failed to Sign In with Google. Refresh & Try Again");
+        console.log(error);
+      });
   };
 
   return (
@@ -139,6 +165,16 @@ const Login = () => {
               disabled={loading}
             >
               Log In
+            </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              sx={{ mb: 2 }}
+              disabled={loading}
+              onClick={handleGoogleSignIn}
+              startIcon={<GoogleIcon />}
+            >
+              Sign In With Google
             </Button>
             <Grid container>
               <Grid item xs>
