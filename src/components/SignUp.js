@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import GoogleIcon from "@mui/icons-material/Google";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -68,7 +69,7 @@ const SignUp = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { signUp } = useAuth();
+  const { signUp, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -87,6 +88,25 @@ const SignUp = () => {
     } catch {
       setError("Failed to create your account");
     }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setLoading(true);
+    await signInWithGoogle()
+      .then((result) => {
+        addUser(
+          result.user.email,
+          result.user.displayName,
+          result.user.displayName
+        );
+        setLoading(false);
+        history.push("/");
+      })
+      .catch((error) => {
+        setError("Failed to Sign In with Google");
+        console.log(error);
+      });
   };
 
   return (
@@ -196,6 +216,16 @@ const SignUp = () => {
               disabled={loading}
             >
               Sign Up
+            </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              sx={{ mb: 2 }}
+              disabled={loading}
+              onClick={handleGoogleSignIn}
+              startIcon={<GoogleIcon />}
+            >
+              Sign In With Google
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
