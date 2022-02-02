@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
 import {
   Container,
   createTheme,
@@ -25,6 +27,10 @@ const Home = () => {
 
   const [error, setError] = useState("");
   const { currentUser, logout } = useAuth();
+  const [currentUserData, setCurrentUserData] = useState({
+    email: "",
+    name: "",
+  });
   const history = useHistory();
 
   const handleLogOut = async () => {
@@ -36,6 +42,18 @@ const Home = () => {
       setError("Failed to Log out");
     }
   };
+
+  useEffect(() => {
+    const getCurrentUserData = async () => {
+      const data = await getDoc(doc(db, "users", currentUser.uid)).then(
+        (result) => {
+          setCurrentUserData(result.data());
+        }
+      );
+    };
+
+    getCurrentUserData();
+  }, []);
 
   return currentUser ? (
     <ThemeProvider theme={theme}>
@@ -52,7 +70,11 @@ const Home = () => {
             <List>
               <ListItem>
                 <ListItemText>Email</ListItemText>
-                <ListItemText>{currentUser.email}</ListItemText>
+                <ListItemText>{currentUserData.email}</ListItemText>
+              </ListItem>
+              <ListItem>
+                <ListItemText>Name</ListItemText>
+                <ListItemText>{currentUserData.name}</ListItemText>
               </ListItem>
             </List>
           </CardContent>
