@@ -39,7 +39,7 @@ const theme = createTheme({
 });
 
 const SignUp = () => {
-  const [user, setUser] = useState({
+  const [userInput, setUserInput] = useState({
     name: "",
     email: "",
     password: "",
@@ -52,7 +52,7 @@ const SignUp = () => {
   const getUserData = (event) => {
     name = event.target.name;
     value = event.target.value;
-    setUser({ ...user, [name]: value });
+    setUserInput({ ...userInput, [name]: value });
   };
 
   const [error, setError] = useState("");
@@ -63,17 +63,17 @@ const SignUp = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (user.password !== user.confirmPassword) {
+    if (userInput.password !== userInput.confirmPassword) {
       return setError("Passwords do not match!");
     }
 
     try {
       setError("");
       setLoading(true);
-      await signUp(user.email, user.password).then(async (result) => {
+      await signUp(userInput.email, userInput.password).then(async (result) => {
         await setDoc(doc(db, "users", result.user.uid), {
-          email: user.email,
-          name: user.name,
+          email: userInput.email,
+          name: userInput.name,
         });
       });
       setLoading(false);
@@ -127,7 +127,7 @@ const SignUp = () => {
                   id="name"
                   label="Your Name"
                   autoFocus
-                  value={user.name}
+                  value={userInput.name}
                   onChange={getUserData}
                 />
               </Grid>
@@ -139,7 +139,7 @@ const SignUp = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  value={user.email}
+                  value={userInput.email}
                   onChange={getUserData}
                 />
               </Grid>
@@ -152,7 +152,7 @@ const SignUp = () => {
                   type="password"
                   id="password"
                   autoComplete="new-password"
-                  value={user.password}
+                  value={userInput.password}
                   onChange={getUserData}
                 />
               </Grid>
@@ -165,7 +165,7 @@ const SignUp = () => {
                   type="password"
                   id="confirmPassword"
                   autoComplete="new-password"
-                  value={user.confirmPassword}
+                  value={userInput.confirmPassword}
                   onChange={getUserData}
                 />
               </Grid>

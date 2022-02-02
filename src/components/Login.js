@@ -40,7 +40,7 @@ const theme = createTheme({
 });
 
 const Login = () => {
-  const [user, setUser] = useState({
+  const [userInput, setUserInput] = useState({
     email: "",
     password: "",
   });
@@ -51,7 +51,7 @@ const Login = () => {
   const getUserData = (event) => {
     name = event.target.name;
     value = event.target.value;
-    setUser({ ...user, [name]: value });
+    setUserInput({ ...userInput, [name]: value });
   };
 
   const [error, setError] = useState("");
@@ -65,7 +65,7 @@ const Login = () => {
     try {
       setError("");
       setLoading(true);
-      await login(user.email, user.password);
+      await login(userInput.email, userInput.password);
       setLoading(false);
       history.push("/");
     } catch {
@@ -134,7 +134,7 @@ const Login = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  value={user.email}
+                  value={userInput.email}
                   onChange={getUserData}
                 />
               </Grid>
@@ -147,7 +147,7 @@ const Login = () => {
                   type="password"
                   id="password"
                   autoComplete="new-password"
-                  value={user.password}
+                  value={userInput.password}
                   onChange={getUserData}
                 />
               </Grid>

@@ -36,7 +36,7 @@ const theme = createTheme({
 });
 
 const UpdateProfile = () => {
-  const [user, setUser] = useState({
+  const [userInput, setUserInput] = useState({
     email: "",
     password: "",
     confirmPassword: "",
@@ -50,7 +50,7 @@ const UpdateProfile = () => {
   const getUserData = (event) => {
     name = event.target.name;
     value = event.target.value;
-    setUser({ ...user, [name]: value });
+    setUserInput({ ...userInput, [name]: value });
   };
 
   const [error, setError] = useState("");
@@ -59,18 +59,18 @@ const UpdateProfile = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (user.password !== user.confirmPassword) {
+    if (userInput.password !== userInput.confirmPassword) {
       return setError("Passwords do not match!");
     }
 
     const promises = [];
     setLoading(true);
     setError("");
-    if (user.email !== currentUser.email) {
-      promises.push(updateEmail(user.email));
+    if (userInput.email !== currentUser.email) {
+      promises.push(updateEmail(userInput.email));
     }
-    if (user.password !== currentUser.password) {
-      promises.push(updatePassword(user.password));
+    if (userInput.password !== currentUser.password) {
+      promises.push(updatePassword(userInput.password));
     }
 
     Promise.all(promises)
@@ -135,7 +135,7 @@ const UpdateProfile = () => {
                   id="password"
                   placeholder="Leave blank to keep the same"
                   autoComplete="new-password"
-                  value={user.password}
+                  value={userInput.password}
                   onChange={getUserData}
                 />
               </Grid>
@@ -148,7 +148,7 @@ const UpdateProfile = () => {
                   id="confirmPassword"
                   placeholder="Leave blank to keep the same"
                   autoComplete="new-password"
-                  value={user.confirmPassword}
+                  value={userInput.confirmPassword}
                   onChange={getUserData}
                 />
               </Grid>

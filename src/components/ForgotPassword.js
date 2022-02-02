@@ -36,7 +36,7 @@ const theme = createTheme({
 });
 
 const ForgotPassword = () => {
-  const [user, setUser] = useState({
+  const [userInput, setUserInput] = useState({
     email: "",
   });
 
@@ -44,7 +44,7 @@ const ForgotPassword = () => {
   const getUserData = (event) => {
     name = event.target.name;
     value = event.target.value;
-    setUser({ ...user, [name]: value });
+    setUserInput({ ...userInput, [name]: value });
   };
 
   const [error, setError] = useState("");
@@ -60,7 +60,7 @@ const ForgotPassword = () => {
       setMessage("");
       setError("");
       setLoading(true);
-      await resetPassword(user.email);
+      await resetPassword(userInput.email);
       setMessage("Check your email inbox for further instructions");
     } catch {
       setError("Failed to Log in");
@@ -112,7 +112,7 @@ const ForgotPassword = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  value={user.email}
+                  value={userInput.email}
                   onChange={getUserData}
                 />
               </Grid>
