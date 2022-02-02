@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { db } from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -46,14 +46,6 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
-  const usersCollectionRef = collection(db, "users");
-  const addUser = async (email, name) => {
-    await addDoc(usersCollectionRef, {
-      email: email,
-      name: name,
-    });
-  };
-
   const history = useHistory();
 
   let name, value;
@@ -78,8 +70,12 @@ const SignUp = () => {
     try {
       setError("");
       setLoading(true);
-      await signUp(user.email, user.password);
-      addUser(user.email, user.name);
+      await signUp(user.email, user.password).then(async (result) => {
+        await setDoc(doc(db, "users", result.user.uid), {
+          email: user.email,
+          name: user.name,
+        });
+      });
       setLoading(false);
       history.push("/");
     } catch {
