@@ -45,14 +45,13 @@ const Home = () => {
 
   useEffect(() => {
     const getCurrentUserData = async () => {
-      const data = await getDoc(doc(db, "users", currentUser.uid)).then(
-        (result) => {
-          setCurrentUserData(result.data());
-        }
-      );
+      await getDoc(doc(db, "users", currentUser.uid)).then((result) => {
+        setCurrentUserData(result.data());
+      });
     };
 
     getCurrentUserData();
+    // eslint-disable-next-line
   }, []);
 
   return currentUser ? (
